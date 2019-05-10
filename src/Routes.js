@@ -75,10 +75,20 @@ const ProfileSwitchRoutes = createSwitchNavigator({
             }
         }
     }),
-    'Profile': {
-        screen: Profile
-    }
-
+    'Profile': createStackNavigator({
+        'Profile': {
+            screen: Profile,
+            navigationOptions: {
+                header: null,
+            }
+        },
+        'MyOccorrences': {
+            screen: OccurrenceList,
+            navigationOptions: {
+                headerTitle: 'Minhas ocorrências'
+            }
+        }
+    })
 })
 
 const TabNavigator = createBottomTabNavigator({

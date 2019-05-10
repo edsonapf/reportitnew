@@ -8,17 +8,35 @@ import {
     Image 
 } from 'react-native';
 import { connect } from 'react-redux';
-import { updateUser } from '../actions/users'
+import { updateUser } from '../actions/users';
+import { instanceFile as axios }  from '../helpers/request';
 
 
 class Profile extends Component {
 
+    state = {
+        myOcc: null
+    }
+
     logout() {
         this.props.updateUser({}, {isLogged: false, token: ''})
-        console.warn(this.props.isLogged)
+        console.warn(this.props.login)
+    }
+
+    listMyOccurrences = async () => {
+        try{
+            const response = await axios.get('/occurrences/', {params:{
+                id: this.props.id
+            }})
+            this.setState({myOcc: response.data.result});
+            this.props.navigation.navigate('MyOccorrences', {occ: this.state.myOcc})
+        }catch(e) {
+            console.warn(e)
+        }       
     }
 
     render() {
+
         return (
             <View style={styles.principalContainer}>
                 
@@ -28,12 +46,13 @@ class Profile extends Component {
                         // source={{uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png'}}
                         source={userPhoto}
                     />
-                    <Text style={styles.textProfile}>Olá, João</Text>
+                    <Text style={styles.textProfile}>Olá, {this.props.name}</Text>
                 </View>
                 <View style={styles.optionsContainer}>
                     <TouchableOpacity 
                         style={styles.button}
                         activeOpacity={0.8}
+                        onPress={() => this.listMyOccurrences()}
                     >
                         <Text style={styles.textButton}>Minhas Ocorrências</Text>
                     </TouchableOpacity>
@@ -92,7 +111,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = function(state) {
     return {
-      isLogged: state.isLogged
+        id: state.users.id,
+        name: state.users.name,
+        // isLogged: state.users.isLogged
+        login: state.users.isLogged
     }
 }
 

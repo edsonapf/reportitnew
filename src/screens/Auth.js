@@ -35,7 +35,7 @@ class Auth extends Component {
                 username: this.state.username,
                 password: this.state.password,
             }).then(response => {
-                console.warn(response)
+                // console.warn(response)
                 // console.warn(this.props.updateUser);
                 this.props
                 .updateUser(response.data.result, {isLogged: true, token: response.data.token})
