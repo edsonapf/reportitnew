@@ -13,8 +13,9 @@ import DetailsInput from '../components/DetailsInput';
 import DatePicker from 'react-native-datepicker';
 import Geocoder from 'react-native-geocoder';
 import { instanceFile as axios }  from '../helpers/request';
+import { connect } from 'react-redux';
 
-export default class ReportDetails extends Component {
+class ReportDetails extends Component {
     state = {
         item: '',
         description: '',
@@ -48,18 +49,10 @@ export default class ReportDetails extends Component {
             Alert.alert('Preencha todos os campos.')
         } else {
 
-            console.warn({id: '5cd4ff495ca08916706bd5be',
-            description: this.state.description,
-            date: '2020-05-09 21:04',
-            type: this.state.typeOccurrence,
-            location: `{"lat": ${this.state.coord.lat}, "lng": ${this.state.coord.lng}}`,
-            address: this.state.addressName,
-            itemsLost: this.state.item,})
-
             axios.post('/occurrences/create', {
-                id: '5cd561bb86c34a2f586d38d5',
+                id: this.props.idUser,
                 description: this.state.description,
-                date: '2020-05-09 21:04',
+                date: this.state.date,
                 type: this.state.typeOccurrence,
                 location: `{"lng": ${this.state.coord.lng}, "lat": ${this.state.coord.lat}}`,
                 address: this.state.addressName,
@@ -199,3 +192,11 @@ const styles = StyleSheet.create({
         marginLeft: 100
     }
 });
+
+const mapStateToProps = function(state) {
+    return {
+      idUser: state.users.id
+    }
+}
+
+export default connect(mapStateToProps)(ReportDetails);

@@ -61,6 +61,7 @@ export default class OccurencesReport extends Component {
                     ...(this.state.checked[1] && {latt: this.state.position.lat}),
                     ...(this.state.checked[2] && {type: this.state.typeOccurrence})
                 }})
+                //console.warn(response.data);
                 this.setState({allOccurrences: response.data.result});
                 this.props.navigation.navigate('OccurrenceList', {occ: this.state.allOccurrences})
             }catch(e) {

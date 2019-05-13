@@ -35,8 +35,6 @@ class Auth extends Component {
                 username: this.state.username,
                 password: this.state.password,
             }).then(response => {
-                // console.warn(response)
-                // console.warn(this.props.updateUser);
                 this.props
                 .updateUser(response.data.result, {isLogged: true, token: response.data.token})
                 this.props.navigation.navigate('Profile');
@@ -70,6 +68,7 @@ class Auth extends Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => this.checkUserInput()}
+                        activeOpacity={0.8}
                     >
                         <View style={styles.button}>
                             <Text style={styles.text}>Entrar</Text>
@@ -88,9 +87,6 @@ const styles = StyleSheet.create({
     },
     subContainer: {
         flex: 1,
-        // backgroundColor: 'red',
-        // justifyContent: 'center',
-        // alignItems: 'center',
     },
     inputContainer: {
         backgroundColor: '#F7F7F7',

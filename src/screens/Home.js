@@ -22,11 +22,6 @@ import { updateOccurrences } from '../actions/occurrences'
 
 class Home extends Component {
 
-    // constructor() {
-    //     super();
-    //     this.state.allOccurrences = this.getAllOccurrences();
-    // }
-
     state = {
         allOccurrences: null,
         region: null,
@@ -67,7 +62,8 @@ class Home extends Component {
                 }
               })
             },
-            (e) => { console.warn(e)}
+            (e) => { console.warn(e)},
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
         );
     }
 
@@ -96,36 +92,15 @@ class Home extends Component {
         try{
             const response = await axios.get('/occurrences/')
             this.setState({allOccurrences: response.data.result});
-            // this.props.updateOccurrences(response.data.result);
-            // console.log(this.state.allOccurrences)
         }catch(e) {
             console.warn(e)
         }
-    }
-
-    waitASecond() {
-        setTimeout(() => {
-            console.log('Our data is fetched');
-          }, 5000)
     }
 
     getFilteredOccurrences = async () => {
         if(!this.state.checked[0] && !this.state.checked[1]) {
             this.getAllOccurrences();
         } else {
-            // axios.get('/occurrences/', {params:{
-            //     ...(this.state.checked[0] && {date_start: this.state.dateStart}),
-            //     ...(this.state.checked[0] && {date_start: this.state.dateEnd}),
-            //     ...(this.state.checked[1] && {type: this.state.typeOccurrence})
-            // }})
-            // .then(response => {
-            //     this.setState({allOccurrences: response.data.result})
-            //     this.props.updateOccurrences(response.data.result);
-            //     Alert.alert('Filtrou');
-            // })
-            // .catch(error => {
-            //     console.warn(error.response);
-            // });
             try {
                 const response = await axios.get('/occurrences/', {params:{
                     ...(this.state.checked[0] && {date_start: this.state.dateStart}),
@@ -140,12 +115,10 @@ class Home extends Component {
     }
 
     componentWillMount = async () => {
-        // await this.getAllOccurrences();
         this.setActualLocation();          
     }
 
     componentDidMount = async () => {
-        // await this.getAllOccurrences();
         await this.getFilteredOccurrences();
     }
 
@@ -161,7 +134,6 @@ class Home extends Component {
                     loadingEnabled={true}
                 >
                     { this.state.allOccurrences ? this.state.allOccurrences.map((o, i) => {
-                        // console.log('aqui', o)
                         return (
                             <Marker
                                 key={i} 
@@ -171,17 +143,7 @@ class Home extends Component {
                             />
                         ) 
                     })
-                    : null }
-
-                    {/* {
-                        this.state.marker &&
-                            <Marker 
-                                // title={l.itemsLost}
-                                // description={l.description}
-                                coordinate={this.state.marker}
-                            />
-                    }  */}
-                    
+                    : null }                    
                 
                 </MapView>
                 <SeachLocation 
@@ -266,7 +228,6 @@ class Home extends Component {
                         activeOpacity={0.8}
                         onPress={() => {this.setModalVisible(!this.state.modalVisible)}}>
                         <View style={[styles.otherButton, {marginRight: 5}]}>
-                            {/* <Text style={styles.otherText}>Local</Text> */}
                             <Icon name='filter-list' size={30} color='#F7F7F7'/>
                         </View>
                     </TouchableOpacity>
@@ -274,7 +235,10 @@ class Home extends Component {
                         style={{ flex: 4 }}
                         activeOpacity={0.8}
                         onPress={() => {
-                            this.props.navigation.navigate('ReportDetails', {att: this.getFilteredOccurrences.bind(this)})
+                            if(this.props.login)
+                                this.props.navigation.navigate('ReportDetails', {att: this.getFilteredOccurrences.bind(this)})
+                            else
+                                Alert.alert('Faça o login')
                         }}>
                         <View style={styles.reportButton}>
                             <Text style={styles.reportText}>Denunciar</Text>
@@ -285,7 +249,6 @@ class Home extends Component {
                         activeOpacity={0.8}
                         onPress={() => this.setActualLocation()}>
                         <View style={[styles.otherButton, {marginLeft: 5}]}>
-                            {/* <Text style={styles.otherText}>Local</Text> */}
                             <Icon name='room' size={30} color='#F7F7F7'/>
                         </View>
                     </TouchableOpacity>
@@ -339,7 +302,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         marginTop: 150,
-        // alignItems: 'flex-end',
     },
     checkContainer: {
         flexDirection: 'row',
@@ -349,8 +311,6 @@ const styles = StyleSheet.create({
     picker: {
         width: 120, 
         borderWidth: 1, 
-        //borderColor: 'red', 
-        //backgroundColor: '#F7F7F7'
     },
     filterButton: {
         backgroundColor: '#F7F7F7',
@@ -361,7 +321,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: Dimensions.get('window').width/2.75,
-        // marginRight: 200,
     },
     filters: {
         backgroundColor: '#F7F7F7',

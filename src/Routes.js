@@ -16,7 +16,6 @@ import OccurrenceList from './screens/OccurrenceList';
 import SigninSignup from './screens/SigninSignup';
 import Auth from './screens/Auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Test from './screens/Test'
 
 const HomeStackRoutes = createStackNavigator({
     'Home': {
